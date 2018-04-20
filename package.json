@@ -10,7 +10,8 @@
     "start": "probot run ./index.js",
     "lint": "standard --fix",
     "test": "jest && standard",
-    "test:watch": "jest --watch --notify --notifyMode=change --coverage"
+    "test:watch": "jest --watch --notify --notifyMode=change --coverage",
+    "simulate-suite": "./node_modules/.bin/probot simulate check_suite test/fixtures/check_suite.requested.json"
   },
   "dependencies": {
     "probot": "^6.0.0"
