@@ -11,14 +11,14 @@
     "lint": "standard --fix",
     "test": "jest && standard",
     "test:watch": "jest --watch --notify --notifyMode=change --coverage",
-    "simulate-suite": "./node_modules/.bin/probot simulate check_suite test/fixtures/check_suite.requested.json"
+    "simulate-suite": "LOG_LEVEL=DEBUG node_modules/.bin/probot simulate check_suite ./test/fixtures/check_suite.requested.json ./index.js"
   },
   "dependencies": {
-    "probot": "^6.0.0"
+    "probot": "^6.1.0"
   },
   "devDependencies": {
     "jest": "^22.4.3",
-    "nodemon": "^1.17.2",
+    "nodemon": "^1.17.4",
     "smee-client": "^1.0.1",
     "standard": "^10.0.3"
   },

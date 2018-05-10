@@ -1,10 +1,6 @@
 module.exports = (robot) => {
-  // Your code here
-  robot.log('Yay, the app was loaded!')
-
-  // For more information on building apps:
-  // https://probot.github.io/docs/
-
-  // To get your app running against GitHub, see:
-  // https://probot.github.io/docs/development/
+  robot.on('check_suite', context => {
+    // robot.log('Yay, check_suite was requested!')
+    context.log(context.payload)
+  })
 }
