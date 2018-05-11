@@ -36,11 +36,23 @@ module.exports = (robot) => {
         // Process all .md files in this repo
 
         // Process HELLO_ALEX.md
-        const path = context.repo({path: 'HELLO_ALEX.md', ref: branch})
+        const file = 'HELLO_ALEX.md'
+        const path = context.repo({path: file, ref: branch})
         const {data: {content: encoded}} = await context.github.repos.getContent(path)
         const decoded = Buffer.from(encoded, 'base64').toString()
-        const analysis = alex.markdown(decoded).messages
-        context.log('analysis is %j.', analysis)
+        const annotations = alex.markdown(decoded).messages.map(message => {
+          const {message: description, ruleId: title, location} = message
+          return {
+            filename: 'HELLO_ALEX.md',  // The name of the file to add an annotation to.
+            blob_href: `https://github.com/${owner}/${repo}/blob/${sha}/${file}`, // The file's full blob URL.
+            start_line: location.start.line, // The start line of the annotation.
+            end_line: location.end.line, // The end line of the annotation.
+            warning_level: 'notice', // The warning level of the annotation. Can be one of notice, warning, or failure.
+            message: description, // A short description of the feedback for these lines of code. The maximum size is 64 KB.
+            title: title // The title that represents the annotation. The maximum size is 255 characters.
+          }
+        })
+        console.log('annotations are %j', annotations)
 
         // Provide feedback
         // https://developer.github.com/v3/checks/runs/#update-a-check-run
@@ -55,16 +67,8 @@ module.exports = (robot) => {
           completed_at: (new Date()).toISOString(),
           output: {
             title: 'analysis',
-            summary: '[Alex](http://alexjs.com/) found 1 issue',
-            annotations: [{
-              filename: 'HELLO_ALEX.md',  // The name of the file to add an annotation to.
-              blob_href: 'https://github.com/swinton/example/blob/c017292677f172a6a283d8a81810421d2209d822/HELLO_ALEX.md', // The file's full blob URL.
-              start_line: 3, // The start line of the annotation.
-              end_line: 3, // The end line of the annotation.
-              warning_level: 'notice', // The warning level of the annotation. Can be one of notice, warning, or failure.
-              message: "`his` may be insensitive, use `their`, `theirs`, `them` instead", // A short description of the feedback for these lines of code. The maximum size is 64 KB.
-              title: "her-him" // The title that represents the annotation. The maximum size is 255 characters.
-            }]
+            summary: `Alex found ${annotations.length} issue${annotations.length === 1 ? '' : 's'}`,
+            annotations: annotations
           }
         }))
 
