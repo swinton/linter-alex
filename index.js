@@ -57,21 +57,29 @@ module.exports = (robot) => {
         // Provide feedback
         // https://developer.github.com/v3/checks/runs/#update-a-check-run
         // PATCH /repos/:owner/:repo/check-runs/:check_run_id
-        result = await context.github.request(Object.assign(headers, {
+
+        let options = {
           method: 'PATCH',
           url: check_run_url,
           head_branch: branch,
           head_sha: sha,
           status: 'completed',
-          conclusion: 'neutral',
-          completed_at: (new Date()).toISOString(),
-          output: {
-            title: 'analysis',
-            summary: `Alex found ${annotations.length} issue${annotations.length === 1 ? '' : 's'}`,
-            annotations: annotations
-          }
-        }))
+          conclusion: annotations.length > 0 ? 'neutral' : 'success',
+          completed_at: (new Date()).toISOString()
+        }
 
+        if (annotations.length > 0) {
+          // Include output and annotations
+          options = Object.assign(options, {
+            output: {
+              title: 'analysis',
+              summary: `Alex found ${annotations.length} issue${annotations.length === 1 ? '' : 's'}`,
+              annotations: annotations
+            }
+          })
+        }
+
+        result = await context.github.request(Object.assign(headers, options))
     }
   })
 }
