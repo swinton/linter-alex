@@ -3,7 +3,7 @@
   "check_suite": {
     "id": 264246,
     "head_branch": "helloworld",
-    "head_sha": "2e3d00a6f14a667d50ad9ccd6f3dcfded52121e2",
+    "head_sha": "c017292677f172a6a283d8a81810421d2209d822",
     "status": "queued",
     "conclusion": null,
     "url": "https://api.github.com/repos/swinton/example/check-suites/264246",
