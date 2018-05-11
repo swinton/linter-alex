@@ -1,6 +1,6 @@
 # linter-alex
 
-> a GitHub App built with [probot](https://github.com/probot/probot) that integrates [Alex](http://alexjs.com/) with GitHub's [(beta) Checks API](https://developer.github.com/changes/2018-05-07-new-checks-api-public-beta/), ensuring **sensitive, considerate writing before you merge your Pull Requests**.
+> a GitHub App built with [probot](https://github.com/probot/probot) combining [Alex](http://alexjs.com/) with GitHub's [(beta) Checks API](https://developer.github.com/changes/2018-05-07-new-checks-api-public-beta/) to ensure **sensitive, considerate writing before you merge your Pull Requests**.
 
 ### Looking for an example?
 
@@ -8,10 +8,14 @@
 
 ## Installation
 
-Want to try it out? :sparkles: :cool: :sparkles: You can install the app from [this page](https://github.com/apps/linter-alex).
+Want to try it out? :sparkles: :cool: :sparkles: You can install the app directly from [**this page**](https://github.com/apps/linter-alex).
 
 See [docs/deploy.md](docs/deploy.md) if you would like to run your own instance of this app.
 
 ## Limitations
 
 Since this is a proof-of-concept, the app is currently limited to scanning `HELLO_ALEX.md` in the root of your repository.
+
+## Feedback?
+
+Please [**open an issue**](https://github.com/swinton/linter-alex/issues/new) :bow:
