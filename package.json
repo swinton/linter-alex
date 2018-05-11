@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@octokit/rest": "^15.4.0",
+    "alex": "^5.1.0",
     "probot": "github:probot/probot#greenkeeper/@octokit/rest-15.4.0"
   },
   "devDependencies": {
