@@ -10,14 +10,8 @@
 
 Since this is a proof-of-concept, the app is currently limited to scanning `HELLO_ALEX.md` in the root of your repository.
 
-## Setup
+## Installation
 
-```sh
-# Install dependencies
-npm install
-
-# Run the bot
-npm start
-```
+Want to try it out? :sparkles: :cool: :sparkles: You can install the app from [this page](https://github.com/apps/linter-alex).
 
 See [docs/deploy.md](docs/deploy.md) if you would like to run your own instance of this app.
