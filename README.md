@@ -1,10 +1,10 @@
 # linter-alex
 
-> a GitHub App built with [probot](https://github.com/probot/probot) that integrates [Alex](http://alexjs.com/) with GitHub's [(beta) Checks API](https://developer.github.com/changes/2018-05-07-new-checks-api-public-beta/), ensuring sensitive, considerate writing before you merge your Pull Requests.
+> a GitHub App built with [probot](https://github.com/probot/probot) that integrates [Alex](http://alexjs.com/) with GitHub's [(beta) Checks API](https://developer.github.com/changes/2018-05-07-new-checks-api-public-beta/), ensuring **sensitive, considerate writing before you merge your Pull Requests**.
 
-## Example
+## Looking for an example?
 
-There's an example [here](https://github.com/swinton/example/runs/449335).
+[**Here you go**](https://github.com/swinton/example/runs/449335)! :eyes:
 
 ## Limitations
 
