@@ -35,7 +35,8 @@ module.exports = (robot) => {
         // Process all .md files in this repo
         const annotations = (await analyzeTree(owner, repo, sha))
           .filter(annotation => annotation.length > 0)
-        context.log('annotations are %j', annotations)
+          .reduce((accumulator, currentValue) => accumulator.concat(currentValue), [])
+        context.log('annotations (%d) are %j', annotations.length, annotations)
 
         // Provide feedback
         // https://developer.github.com/v3/checks/runs/#update-a-check-run
@@ -63,6 +64,7 @@ module.exports = (robot) => {
         }
 
         result = await context.github.request(Object.assign(headers, options))
+        context.log('result is %j', result)
     }
   })
 }
