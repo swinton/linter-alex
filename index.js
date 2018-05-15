@@ -1,12 +1,13 @@
 const mediaType = 'application/vnd.github.antiope-preview+json'
 const headers = {headers: {accept: mediaType}}
+const analyzer = require('./lib/analysis')
 
 module.exports = (robot) => {
   robot.on('check_suite', async context => {
-    const analyzeTree = require('./lib/analysis')(context)
     const {action, check_suite} = context.payload
     const {owner, repo} = context.repo()
     const {head_branch: branch, head_sha: sha} = check_suite
+    const analyzeTree = analyzer(context)
 
     context.log(`action is "${action}".`)
     context.log(`repo is "${owner}/${repo}".`)
