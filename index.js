@@ -1,6 +1,6 @@
-const alex = require('alex')
 const mediaType = 'application/vnd.github.antiope-preview+json'
 const headers = {headers: {accept: mediaType}}
+const analyzeTree = require('./lib/analysis')
 
 module.exports = (robot) => {
   robot.on('check_suite', async context => {
@@ -32,27 +32,11 @@ module.exports = (robot) => {
         context.log(`check_run_id is ${check_run_id}.`)
         context.log(`check_run_url is ${check_run_url}.`)
 
-        // TODO
         // Process all .md files in this repo
-
-        // Process HELLO_ALEX.md
-        const file = 'HELLO_ALEX.md'
-        const path = context.repo({path: file, ref: branch})
-        const {data: {content: encoded}} = await context.github.repos.getContent(path)
-        const decoded = Buffer.from(encoded, 'base64').toString()
-        const annotations = alex.markdown(decoded).messages.map(message => {
-          const {message: description, ruleId: title, location} = message
-          return {
-            filename: 'HELLO_ALEX.md',  // The name of the file to add an annotation to.
-            blob_href: `https://github.com/${owner}/${repo}/blob/${sha}/${file}`, // The file's full blob URL.
-            start_line: location.start.line, // The start line of the annotation.
-            end_line: location.end.line, // The end line of the annotation.
-            warning_level: 'notice', // The warning level of the annotation. Can be one of notice, warning, or failure.
-            message: description, // A short description of the feedback for these lines of code. The maximum size is 64 KB.
-            title: title // The title that represents the annotation. The maximum size is 255 characters.
-          }
-        })
-        console.log('annotations are %j', annotations)
+        const annotations = (await analyzeTree(context, owner, repo, sha))
+          .filter(annotation => annotation.length > 0)
+          .reduce((accumulator, currentValue) => accumulator.concat(currentValue), [])
+        context.log('annotations (%d) are %j', annotations.length, annotations)
 
         // Provide feedback
         // https://developer.github.com/v3/checks/runs/#update-a-check-run
@@ -80,6 +64,7 @@ module.exports = (robot) => {
         }
 
         result = await context.github.request(Object.assign(headers, options))
+        context.log('result is %j', result)
     }
   })
 }
