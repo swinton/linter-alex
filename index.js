@@ -1,13 +1,12 @@
 const mediaType = 'application/vnd.github.antiope-preview+json'
 const headers = {headers: {accept: mediaType}}
-const analyzer = require('./lib/analysis')
+const analyzeTree = require('./lib/analysis')
 
 module.exports = (robot) => {
   robot.on('check_suite', async context => {
     const {action, check_suite} = context.payload
     const {owner, repo} = context.repo()
     const {head_branch: branch, head_sha: sha} = check_suite
-    const analyzeTree = analyzer(context)
 
     context.log(`action is "${action}".`)
     context.log(`repo is "${owner}/${repo}".`)
@@ -34,7 +33,7 @@ module.exports = (robot) => {
         context.log(`check_run_url is ${check_run_url}.`)
 
         // Process all .md files in this repo
-        const annotations = (await analyzeTree(owner, repo, sha))
+        const annotations = (await analyzeTree(context, owner, repo, sha))
           .filter(annotation => annotation.length > 0)
           .reduce((accumulator, currentValue) => accumulator.concat(currentValue), [])
         context.log('annotations (%d) are %j', annotations.length, annotations)
