@@ -3,7 +3,7 @@ const headers = {headers: {accept: mediaType}}
 const analyzeTree = require('./lib/analysis')
 
 module.exports = (robot) => {
-  robot.on('check_suite', async context => {
+  robot.on(['check_suite', 'check_run'], async context => {
     const {action, check_suite} = context.payload
     const {owner, repo} = context.repo()
     const {head_branch: branch, head_sha: sha} = check_suite
