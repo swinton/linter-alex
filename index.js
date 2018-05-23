@@ -13,7 +13,7 @@ module.exports = (robot) => {
     context.log(`branch is "${branch}".`)
     context.log(`sha is "${sha}".`)
 
-    if (action === 'requested') {
+    if (['requested', 'rerequested'].includes(action)) {
       context.log('creating in_progress check run...')
 
         let url = `https://api.github.com/repos/${owner}/${repo}/check-runs`
