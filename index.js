@@ -62,7 +62,8 @@ const handler = async ({context, action, owner, repo, branch, sha}) => {
         head_sha: sha,
         status: 'completed',
         conclusion: annotations.length > 0 ? 'neutral' : 'success',
-        completed_at: (new Date()).toISOString()
+        completed_at: (new Date()).toISOString(),
+        output: undefined
       }
 
       if (annotations.length > 0) {
@@ -75,6 +76,7 @@ const handler = async ({context, action, owner, repo, branch, sha}) => {
           }
         })
       }
+      context.log('options is %j', options)
 
       result = await context.github.request(Object.assign(headers, options))
       context.log('result is %j', result)
