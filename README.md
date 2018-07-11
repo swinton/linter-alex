@@ -14,7 +14,7 @@ See [docs/deploy.md](docs/deploy.md) if you would like to run your own instance 
 
 ## Limitations
 
-Currently, [trees](https://git-scm.com/book/en/v1/Git-Internals-Git-Objects#Tree-Objects) are fetched recursively for analysis via [this API](https://developer.github.com/v3/git/trees/#get-a-tree-recursively), which has a hard limit of 100,000 entries. If your repo has more entries than this, only the first 100,000 entries will be reachable by linter-alex.
+Currently, [trees](https://git-scm.com/book/en/v1/Git-Internals-Git-Objects#Tree-Objects) are fetched recursively for analysis via [this API](https://developer.github.com/v3/git/trees/#get-a-tree-recursively), which has a hard limit of 100,000 _entries_, where each entry is either a _blob_ object or a further _sub-tree_ object. If your repo has more entries than this, only the first 100,000 entries will be reachable by linter-alex.
 
 ## Feedback?
 
