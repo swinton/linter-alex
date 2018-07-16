@@ -1,5 +1,7 @@
 # linter-alex
 
+![](https://travis-ci.org/swinton/linter-alex.svg?branch=master)
+
 > a GitHub App built with [probot](https://github.com/probot/probot) combining [Alex](http://alexjs.com/) with GitHub's [(beta) Checks API](https://developer.github.com/changes/2018-05-07-new-checks-api-public-beta/) to ensure **sensitive, considerate writing before you merge your Pull Requests**.
 
 ### Looking for an example?
