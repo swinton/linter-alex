@@ -9,7 +9,7 @@
     "dev": "nodemon --exec \"npm start\"",
     "start": "probot run ./index.js",
     "lint": "standard --fix",
-    "test": "jest && standard",
+    "test": "jest --coverage",
     "test:watch": "jest --watch --notify --notifyMode=change --coverage",
     "simulate-suite": "LOG_LEVEL=INFO node_modules/.bin/probot simulate check_suite ./test/fixtures/check_suite.requested.json ./index.js",
     "simulate-run": "LOG_LEVEL=INFO node_modules/.bin/probot simulate check_run ./test/fixtures/check_run.rerequested.json ./index.js"
@@ -32,5 +32,20 @@
     "env": [
       "jest"
     ]
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "collectCoverageFrom": [
+      "index.js",
+      "lib/*.js"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 88,
+        "functions": 88,
+        "lines": 88,
+        "statements": 88
+      }
+    }
   }
 }
