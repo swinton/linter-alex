@@ -1,10 +1,31 @@
-// You can import your modules
-// const index = require('../index')
+const {createRobot} = require('probot')
+const app = require('..')
+const payload = require('./fixtures/check_suite.requested')
 
-test('that we can run tests', () => {
-  // your real tests go here
-  expect(1 + 2 + 3).toBe(6)
+describe('index', () => {
+  let robot
+  let github
+
+  beforeEach(() => {
+    // Define event
+    event = {event: 'check_suite', payload: payload}
+
+    // Create robot instance
+    robot = createRobot()
+
+    // Initialize app with robot instance
+    app(robot)
+
+    // Mock out the GitHub API
+    github = {}
+
+    // Pass mocked out GitHub API into out robot instance
+    robot.auth = () => Promise.resolve(github)
+  })
+  
+  it('works', async () => {
+    await robot.receive(event)
+  })
 })
 
-// For more information about testing with Jest see:
-// https://facebook.github.io/jest/
+
