@@ -8,6 +8,7 @@ jest.mock('../lib/analysis.js')
 const analyzeTree = require('../lib/analysis')
 
 describe('index', () => {
+  let event
   let robot
   let github
 
