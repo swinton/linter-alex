@@ -1,6 +1,8 @@
 const {createRobot} = require('probot')
 const app = require('..')
 const payload = require('./fixtures/check_suite.requested')
+const myDate = new Date(Date.UTC(2018, 0, 1))
+const RealDate = Date
 
 // Mock out the analysis implementation for these tests
 // https://jestjs.io/docs/en/mock-functions#mock-implementations
@@ -13,6 +15,14 @@ describe('index', () => {
   let github
 
   beforeEach(() => {
+    global.Date = jest.fn(
+      (...props) =>
+        props.length
+          ? new RealDate(...props)
+          : new RealDate(myDate)
+    )
+    Object.assign(Date, RealDate)
+
     // Define event
     event = {event: 'check_suite', payload: payload}
 
@@ -33,6 +43,10 @@ describe('index', () => {
 
     // Pass mocked out GitHub API into out robot instance
     robot.auth = () => Promise.resolve(github)
+  })
+
+  afterEach(() => {
+    global.Date = RealDate
   })
   
   it('works', async () => {
