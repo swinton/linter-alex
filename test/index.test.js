@@ -49,7 +49,7 @@ describe('index', () => {
     analyzeTree.mockClear()
   })
   
-  it('finds no annotations', async () => {
+  it('handles no annotations', async () => {
     analyzeTree.mockResolvedValue([])
 
     await robot.receive(event)
@@ -87,7 +87,7 @@ describe('index', () => {
     expect(analyzeTree.mock.calls[0][3]).toBe('9875bf915c118e6369a610770288cf7f0a415124')
   })
 
-  it('finds annotations', async () => {
+  it('handles a single annotation', async () => {
     analyzeTree.mockResolvedValue([
       [{
         filename: 'FILENAME.md',
@@ -130,10 +130,157 @@ describe('index', () => {
         title: 'analysis',
         annotations: [{
           blob_href: 'https://github.com/wintron/example/blob/ref/FILENAME.md',
+          start_line: 1,
           end_line: 1,
           filename: 'FILENAME.md',
           message: 'message',
+          title: 'title',
+          warning_level: 'notice',
+        }]
+      },
+      completed_at: '2018-01-01T00:00:00.000Z'
+    })
+
+    expect(analyzeTree).toHaveBeenCalledTimes(1)
+  })
+
+  it('handles multiple annotations from the same file', async () => {
+    analyzeTree.mockResolvedValue([
+      [{
+        filename: 'FILENAME.md',
+        blob_href: 'https://github.com/wintron/example/blob/ref/FILENAME.md',
+        start_line: 1,
+        end_line: 1,
+        warning_level: 'notice',
+        message: 'message',
+        title: 'title'
+      }, {
+        filename: 'FILENAME.md',
+        blob_href: 'https://github.com/wintron/example/blob/ref/FILENAME.md',
+        start_line: 2,
+        end_line: 2,
+        warning_level: 'notice',
+        message: 'message',
+        title: 'title'
+      }]
+    ])
+
+    await robot.receive(event)
+
+    expect(github.request).toHaveBeenCalledTimes(2)
+    expect(github.request).toHaveBeenNthCalledWith(1, {
+      headers: {
+        'accept': 'application/vnd.github.antiope-preview+json'
+      },
+      method: 'POST',
+      url: 'https://api.github.com/repos/wintron/example/check-runs',
+      name: 'feedback',
+      head_branch: 'example',
+      head_sha: '9875bf915c118e6369a610770288cf7f0a415124',
+      status: 'in_progress',
+      started_at: '2018-01-01T00:00:00.000Z'
+    })
+    expect(github.request).toHaveBeenNthCalledWith(2, {
+      headers: {
+        'accept': 'application/vnd.github.antiope-preview+json'
+      },
+      method: 'PATCH',
+      url: 'https://api.github.com/repos/wintron/example/check-runs/42',
+      head_branch: 'example',
+      head_sha: '9875bf915c118e6369a610770288cf7f0a415124',
+      status: 'completed',
+      conclusion: 'neutral',
+      output: {
+        summary: 'Alex found 2 issues',
+        title: 'analysis',
+        annotations: [{
+          blob_href: 'https://github.com/wintron/example/blob/ref/FILENAME.md',
           start_line: 1,
+          end_line: 1,
+          filename: 'FILENAME.md',
+          message: 'message',
+          title: 'title',
+          warning_level: 'notice',
+        }, {
+          blob_href: 'https://github.com/wintron/example/blob/ref/FILENAME.md',
+          start_line: 2,
+          end_line: 2,
+          filename: 'FILENAME.md',
+          message: 'message',
+          title: 'title',
+          warning_level: 'notice',
+        }]
+      },
+      completed_at: '2018-01-01T00:00:00.000Z'
+    })
+
+    expect(analyzeTree).toHaveBeenCalledTimes(1)
+  })
+
+  it('handles multiple annotations across different file', async () => {
+    analyzeTree.mockResolvedValue([
+      [{
+        filename: 'FIRST.md',
+        blob_href: 'https://github.com/wintron/example/blob/ref/FIRST.md',
+        start_line: 1,
+        end_line: 1,
+        warning_level: 'notice',
+        message: 'message',
+        title: 'title'
+      }],
+      [{
+        filename: 'SECOND.md',
+        blob_href: 'https://github.com/wintron/example/blob/ref/SECOND.md',
+        start_line: 1,
+        end_line: 1,
+        warning_level: 'notice',
+        message: 'message',
+        title: 'title'
+      }]
+    ])
+
+    await robot.receive(event)
+
+    expect(github.request).toHaveBeenCalledTimes(2)
+    expect(github.request).toHaveBeenNthCalledWith(1, {
+      headers: {
+        'accept': 'application/vnd.github.antiope-preview+json'
+      },
+      method: 'POST',
+      url: 'https://api.github.com/repos/wintron/example/check-runs',
+      name: 'feedback',
+      head_branch: 'example',
+      head_sha: '9875bf915c118e6369a610770288cf7f0a415124',
+      status: 'in_progress',
+      started_at: '2018-01-01T00:00:00.000Z'
+    })
+    expect(github.request).toHaveBeenNthCalledWith(2, {
+      headers: {
+        'accept': 'application/vnd.github.antiope-preview+json'
+      },
+      method: 'PATCH',
+      url: 'https://api.github.com/repos/wintron/example/check-runs/42',
+      head_branch: 'example',
+      head_sha: '9875bf915c118e6369a610770288cf7f0a415124',
+      status: 'completed',
+      conclusion: 'neutral',
+      output: {
+        summary: 'Alex found 2 issues',
+        title: 'analysis',
+        annotations: [{
+          blob_href: 'https://github.com/wintron/example/blob/ref/FIRST.md',
+          start_line: 1,
+          end_line: 1,
+          filename: 'FIRST.md',
+          message: 'message',
+          title: 'title',
+          warning_level: 'notice',
+        }, {
+          blob_href: 'https://github.com/wintron/example/blob/ref/SECOND.md',
+          start_line: 1,
+          end_line: 1,
+          filename: 'SECOND.md',
+          message: 'message',
           title: 'title',
           warning_level: 'notice',
         }]
