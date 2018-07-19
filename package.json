@@ -11,8 +11,8 @@
     "lint": "standard --fix",
     "test": "jest --coverage",
     "test:watch": "jest --watch --notify --notifyMode=change --coverage",
-    "simulate-suite": "LOG_LEVEL=INFO node_modules/.bin/probot simulate check_suite ./test/fixtures/check_suite.requested.json ./index.js",
-    "simulate-run": "LOG_LEVEL=INFO node_modules/.bin/probot simulate check_run ./test/fixtures/check_run.rerequested.json ./index.js"
+    "simulate-suite": "LOG_LEVEL=TRACE node_modules/.bin/probot simulate check_suite ./test/fixtures/check_suite.requested.json ./index.js",
+    "simulate-run": "LOG_LEVEL=TRACE node_modules/.bin/probot simulate check_run ./test/fixtures/check_run.rerequested.json ./index.js"
   },
   "dependencies": {
     "alex": "^5.1.0",
