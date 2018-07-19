@@ -1,6 +1,7 @@
 const {createRobot} = require('probot')
 const app = require('..')
-const payload = require('./fixtures/check_suite.requested')
+const checkSuitePayload = require('./fixtures/check_suite.requested')
+const checkRunPayload = require('./fixtures/check_run.rerequested')
 const myDate = new Date(Date.UTC(2018, 0, 1))
 const RealDate = Date
 
@@ -24,7 +25,7 @@ describe('index', () => {
     Object.assign(Date, RealDate)
 
     // Define event
-    event = {event: 'check_suite', payload: payload}
+    event = {event: 'check_suite', payload: checkSuitePayload}
 
     // Create robot instance
     robot = createRobot()
@@ -137,6 +138,43 @@ describe('index', () => {
           warning_level: 'notice',
         }]
       },
+      completed_at: '2018-01-01T00:00:00.000Z'
+    })
+
+    expect(analyzeTree).toHaveBeenCalledTimes(1)
+  })
+
+  it('handles a check_run event', async () => {
+    // Override event
+    event = {event: 'check_run', payload: checkRunPayload}
+
+    analyzeTree.mockResolvedValue([])
+
+    await robot.receive(event)
+
+    expect(github.request).toHaveBeenCalledTimes(2)
+    expect(github.request).toHaveBeenNthCalledWith(1, {
+      headers: {
+        'accept': 'application/vnd.github.antiope-preview+json'
+      },
+      method: 'POST',
+      url: 'https://api.github.com/repos/wintron/example/check-runs',
+      name: 'feedback',
+      head_branch: 'example',
+      head_sha: '8e86089c36bbc8018af737312e756b8c2777ef50',
+      status: 'in_progress',
+      started_at: '2018-01-01T00:00:00.000Z'
+    })
+    expect(github.request).toHaveBeenNthCalledWith(2, {
+      headers: {
+        'accept': 'application/vnd.github.antiope-preview+json'
+      },
+      method: 'PATCH',
+      url: 'https://api.github.com/repos/wintron/example/check-runs/42',
+      head_branch: 'example',
+      head_sha: '8e86089c36bbc8018af737312e756b8c2777ef50',
+      status: 'completed',
+      conclusion: 'success',
       completed_at: '2018-01-01T00:00:00.000Z'
     })
 
