@@ -38,8 +38,8 @@ describe('analyzeTree', () => {
           })
         }
       },
-      // log: jest.fn().mockImplementation(mesg => mesg)
-      log: console.log
+      log: jest.fn().mockImplementation(mesg => mesg)
+      // log: console.log
     }
 
     // alex.mockImplementation({
@@ -54,7 +54,7 @@ describe('analyzeTree', () => {
   })
 
   it("works once", async () => {
-    analyzeTree(context, "wintron", "example", "9875bf915c118e6369a610770288cf7f0a415124")
+    await analyzeTree(context, "wintron", "example", "9875bf915c118e6369a610770288cf7f0a415124")
     
     expect(context.github.gitdata.getTree).toHaveBeenCalledTimes(1)
     expect(context.github.gitdata.getTree).toHaveBeenCalledWith({
@@ -63,6 +63,9 @@ describe('analyzeTree', () => {
       sha: "9875bf915c118e6369a610770288cf7f0a415124", 
       recursive: 1
     })
-    // expect(context.github.gitdata.getBlob).toHaveBeenCalledTimes(1)
+    expect(context.github.gitdata.getBlob).toHaveBeenCalledTimes(1)
+    expect(context.github.gitdata.getBlob).toHaveBeenCalledWith({
+      owner: "wintron", repo: "example", sha: "43fbdc5368d7729a3cf70743cecc50e790ca51d0"
+    })
   })
 })
