@@ -45,10 +45,11 @@ describe('index', () => {
 
   afterEach(() => {
     global.Date = RealDate
+    analyzeTree.mockClear()
   })
   
   it('finds no annotations', async () => {
-    analyzeTree.mockResolvedValueOnce([])
+    analyzeTree.mockResolvedValue([])
 
     await robot.receive(event)
 
@@ -83,6 +84,63 @@ describe('index', () => {
     expect(analyzeTree.mock.calls[0][1]).toBe('wintron')
     expect(analyzeTree.mock.calls[0][2]).toBe('example')
     expect(analyzeTree.mock.calls[0][3]).toBe('9875bf915c118e6369a610770288cf7f0a415124')
+  })
+
+  it('finds annotations', async () => {
+    analyzeTree.mockResolvedValue([
+      [{
+        filename: 'FILENAME.md',
+        blob_href: 'https://github.com/wintron/example/blob/ref/FILENAME.md',
+        start_line: 1,
+        end_line: 1,
+        warning_level: 'notice',
+        message: 'message',
+        title: 'title'
+      }]
+    ])
+
+    await robot.receive(event)
+
+    expect(github.request).toHaveBeenCalledTimes(2)
+    expect(github.request).toHaveBeenNthCalledWith(1, {
+      headers: {
+        'accept': 'application/vnd.github.antiope-preview+json'
+      },
+      method: 'POST',
+      url: 'https://api.github.com/repos/wintron/example/check-runs',
+      name: 'feedback',
+      head_branch: 'example',
+      head_sha: '9875bf915c118e6369a610770288cf7f0a415124',
+      status: 'in_progress',
+      started_at: '2018-01-01T00:00:00.000Z'
+    })
+    expect(github.request).toHaveBeenNthCalledWith(2, {
+      headers: {
+        'accept': 'application/vnd.github.antiope-preview+json'
+      },
+      method: 'PATCH',
+      url: 'https://api.github.com/repos/wintron/example/check-runs/42',
+      head_branch: 'example',
+      head_sha: '9875bf915c118e6369a610770288cf7f0a415124',
+      status: 'completed',
+      conclusion: 'neutral',
+      output: {
+        summary: 'Alex found 1 issue',
+        title: 'analysis',
+        annotations: [{
+          blob_href: 'https://github.com/wintron/example/blob/ref/FILENAME.md',
+          end_line: 1,
+          filename: 'FILENAME.md',
+          message: 'message',
+          start_line: 1,
+          title: 'title',
+          warning_level: 'notice',
+        }]
+      },
+      completed_at: '2018-01-01T00:00:00.000Z'
+    })
+
+    expect(analyzeTree).toHaveBeenCalledTimes(1)
   })
 })
 
