@@ -327,6 +327,16 @@ describe('index', () => {
 
     expect(analyzeTree).toHaveBeenCalledTimes(1)
   })
+
+  it('ignores other check_suite actions', async () => {
+    // Override event action
+    event.payload.action = 'completed'
+
+    await robot.receive(event)
+
+    expect(github.request).toHaveBeenCalledTimes(0)
+    expect(analyzeTree).toHaveBeenCalledTimes(0)
+  })
 })
 
 
