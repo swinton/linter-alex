@@ -21,13 +21,13 @@ module.exports = (robot) => {
 }
 
 const handler = async ({context, action, owner, repo, branch, sha}) => {
-  context.log(`action is "${action}".`)
-  context.log(`repo is "${owner}/${repo}".`)
-  context.log(`branch is "${branch}".`)
-  context.log(`sha is "${sha}".`)
+  context.log.trace(`action is "${action}".`)
+  context.log.trace(`repo is "${owner}/${repo}".`)
+  context.log.trace(`branch is "${branch}".`)
+  context.log.trace(`sha is "${sha}".`)
 
   if (['requested', 'rerequested'].includes(action)) {
-    context.log('creating in_progress check run...')
+    context.log.trace('creating in_progress check run...')
 
       let url = `https://api.github.com/repos/${owner}/${repo}/check-runs`
       let result = await context.github.request(Object.assign({
@@ -41,15 +41,15 @@ const handler = async ({context, action, owner, repo, branch, sha}) => {
       }, headers))
 
       const {data: {id: check_run_id, url: check_run_url}} = result
-      context.log('result is %j.', result)
-      context.log(`check_run_id is ${check_run_id}.`)
-      context.log(`check_run_url is ${check_run_url}.`)
+      context.log.trace('result is %j.', result)
+      context.log.trace(`check_run_id is ${check_run_id}.`)
+      context.log.trace(`check_run_url is ${check_run_url}.`)
 
       // Process all .md files in this repo
       const annotations = (await analyzeTree(context, owner, repo, sha))
         .filter(annotation => annotation.length > 0)
         .reduce((accumulator, currentValue) => accumulator.concat(currentValue), [])
-      context.log('annotations (%d) are %j', annotations.length, annotations)
+      context.log.trace('annotations (%d) are %j', annotations.length, annotations)
 
       // Provide feedback
       // https://developer.github.com/v3/checks/runs/#update-a-check-run
@@ -75,9 +75,9 @@ const handler = async ({context, action, owner, repo, branch, sha}) => {
           }
         }, options)
       }
-      context.log('options is %j', options)
+      context.log.trace('options is %j', options)
 
       result = await context.github.request(Object.assign(options, headers))
-      context.log('result is %j', result)
+      context.log.trace('result is %j', result)
   }
 }
