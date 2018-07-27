@@ -6,24 +6,23 @@ module.exports = (robot) => {
   robot.on('check_run', async context => {
     const {action, check_run} = context.payload
     const {owner, repo} = context.repo()
-    const {check_suite: {head_branch: branch}, head_sha: sha} = check_run
+    const {head_sha: sha} = check_run
 
-    handler({context, action, owner, repo, branch, sha})
+    handler({context, action, owner, repo, sha})
   })
 
   robot.on('check_suite', async context => {
     const {action, check_suite} = context.payload
     const {owner, repo} = context.repo()
-    const {head_branch: branch, head_sha: sha} = check_suite
+    const {head_sha: sha} = check_suite
 
-    handler({context, action, owner, repo, branch, sha})
+    handler({context, action, owner, repo, sha})
   })
 }
 
-const handler = async ({context, action, owner, repo, branch, sha}) => {
+const handler = async ({context, action, owner, repo, sha}) => {
   context.log.trace(`action is "${action}".`)
   context.log.trace(`repo is "${owner}/${repo}".`)
-  context.log.trace(`branch is "${branch}".`)
   context.log.trace(`sha is "${sha}".`)
 
   if (['requested', 'rerequested'].includes(action)) {
@@ -34,7 +33,6 @@ const handler = async ({context, action, owner, repo, branch, sha}) => {
         method: 'POST',
         url: url,
         name: 'feedback',
-        head_branch: branch,
         head_sha: sha,
         status: 'in_progress',
         started_at: (new Date()).toISOString()
@@ -58,8 +56,6 @@ const handler = async ({context, action, owner, repo, branch, sha}) => {
       let options = {
         method: 'PATCH',
         url: check_run_url,
-        head_branch: branch,
-        head_sha: sha,
         status: 'completed',
         conclusion: annotations.length > 0 ? 'neutral' : 'success',
         completed_at: (new Date()).toISOString()
