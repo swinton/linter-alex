@@ -62,7 +62,6 @@ describe('index', () => {
       method: 'POST',
       url: 'https://api.github.com/repos/wintron/example/check-runs',
       name: 'feedback',
-      head_branch: 'example',
       head_sha: '9875bf915c118e6369a610770288cf7f0a415124',
       status: 'in_progress',
       started_at: '2018-01-01T00:00:00.000Z'
@@ -73,8 +72,6 @@ describe('index', () => {
       },
       method: 'PATCH',
       url: 'https://api.github.com/repos/wintron/example/check-runs/42',
-      head_branch: 'example',
-      head_sha: '9875bf915c118e6369a610770288cf7f0a415124',
       status: 'completed',
       conclusion: 'success',
       completed_at: '2018-01-01T00:00:00.000Z'
@@ -110,7 +107,6 @@ describe('index', () => {
       method: 'POST',
       url: 'https://api.github.com/repos/wintron/example/check-runs',
       name: 'feedback',
-      head_branch: 'example',
       head_sha: '9875bf915c118e6369a610770288cf7f0a415124',
       status: 'in_progress',
       started_at: '2018-01-01T00:00:00.000Z'
@@ -121,8 +117,6 @@ describe('index', () => {
       },
       method: 'PATCH',
       url: 'https://api.github.com/repos/wintron/example/check-runs/42',
-      head_branch: 'example',
-      head_sha: '9875bf915c118e6369a610770288cf7f0a415124',
       status: 'completed',
       conclusion: 'neutral',
       output: {
@@ -175,7 +169,6 @@ describe('index', () => {
       method: 'POST',
       url: 'https://api.github.com/repos/wintron/example/check-runs',
       name: 'feedback',
-      head_branch: 'example',
       head_sha: '9875bf915c118e6369a610770288cf7f0a415124',
       status: 'in_progress',
       started_at: '2018-01-01T00:00:00.000Z'
@@ -186,8 +179,6 @@ describe('index', () => {
       },
       method: 'PATCH',
       url: 'https://api.github.com/repos/wintron/example/check-runs/42',
-      head_branch: 'example',
-      head_sha: '9875bf915c118e6369a610770288cf7f0a415124',
       status: 'completed',
       conclusion: 'neutral',
       output: {
@@ -249,7 +240,6 @@ describe('index', () => {
       method: 'POST',
       url: 'https://api.github.com/repos/wintron/example/check-runs',
       name: 'feedback',
-      head_branch: 'example',
       head_sha: '9875bf915c118e6369a610770288cf7f0a415124',
       status: 'in_progress',
       started_at: '2018-01-01T00:00:00.000Z'
@@ -260,8 +250,6 @@ describe('index', () => {
       },
       method: 'PATCH',
       url: 'https://api.github.com/repos/wintron/example/check-runs/42',
-      head_branch: 'example',
-      head_sha: '9875bf915c118e6369a610770288cf7f0a415124',
       status: 'completed',
       conclusion: 'neutral',
       output: {
@@ -307,7 +295,6 @@ describe('index', () => {
       method: 'POST',
       url: 'https://api.github.com/repos/wintron/example/check-runs',
       name: 'feedback',
-      head_branch: 'example',
       head_sha: '8e86089c36bbc8018af737312e756b8c2777ef50',
       status: 'in_progress',
       started_at: '2018-01-01T00:00:00.000Z'
@@ -318,8 +305,6 @@ describe('index', () => {
       },
       method: 'PATCH',
       url: 'https://api.github.com/repos/wintron/example/check-runs/42',
-      head_branch: 'example',
-      head_sha: '8e86089c36bbc8018af737312e756b8c2777ef50',
       status: 'completed',
       conclusion: 'success',
       completed_at: '2018-01-01T00:00:00.000Z'
