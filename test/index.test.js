@@ -324,15 +324,16 @@ describe('index', () => {
       message: 'message',
       title: 'title'
     }
-    // Create an analysis having more than 50 annotations
-    for (let i = 0; i < 51; i++) {
+    // I got 99 annotations...
+    for (let i = 0; i < 99; i++) {
       annotations.push(annotation)
     }
     analyzeTree.mockResolvedValue([annotations])
 
     await robot.receive(event)
 
-    expect(github.request).toHaveBeenCalledTimes(2)
+    expect(annotations.length).toBe(99)
+    expect(github.request).toHaveBeenCalledTimes(3)
     expect(github.request).toHaveBeenNthCalledWith(1, {
       headers: {
         'accept': 'application/vnd.github.antiope-preview+json'
@@ -359,6 +360,21 @@ describe('index', () => {
       },
       completed_at: '2018-01-01T00:00:00.000Z'
     })
+    // expect(github.request).toHaveBeenNthCalledWith(3, {
+    //   headers: {
+    //     'accept': 'application/vnd.github.antiope-preview+json'
+    //   },
+    //   method: 'PATCH',
+    //   url: 'https://api.github.com/repos/wintron/example/check-runs/42',
+    //   status: 'completed',
+    //   conclusion: 'neutral',
+    //   output: {
+    //     summary: 'Alex found 51 issues',
+    //     title: 'analysis',
+    //     annotations: annotations.slice(50, 51)
+    //   },
+    //   completed_at: '2018-01-01T00:00:00.000Z'
+    // })
 
     expect(analyzeTree).toHaveBeenCalledTimes(1)
   })

@@ -47,7 +47,8 @@ const handler = async ({context, action, owner, repo, sha}) => {
       const annotations = (await analyzeTree(context, owner, repo, sha))
         .filter(annotation => annotation.length > 0)
         .reduce((accumulator, currentValue) => accumulator.concat(currentValue), [])
-      context.log.trace('annotations (%d) are %j', annotations.length, annotations)
+      const count = annotations.length
+      context.log.trace('annotations (%d) are %j', count, annotations)
 
       // Provide feedback
       // https://developer.github.com/v3/checks/runs/#update-a-check-run
@@ -57,23 +58,33 @@ const handler = async ({context, action, owner, repo, sha}) => {
         method: 'PATCH',
         url: check_run_url,
         status: 'completed',
-        conclusion: annotations.length > 0 ? 'neutral' : 'success',
+        conclusion: count > 0 ? 'neutral' : 'success',
         completed_at: (new Date()).toISOString()
       }
 
-      if (annotations.length > 0) {
-        // Include output and annotations
-        options = Object.assign({
-          output: {
-            title: 'analysis',
-            summary: `Alex found ${annotations.length} issue${annotations.length === 1 ? '' : 's'}`,
-            annotations: annotations
-          }
-        }, options)
+      if (count > 0) {
+        // Send annotations in batches of (up to) 50
+        let batch
+        while (annotations.length > 0) {
+          batch = annotations.splice(0, 50)
+          options = Object.assign({
+            output: {
+              title: 'analysis',
+              summary: `Alex found ${count} issue${count === 1 ? '' : 's'}`,
+              annotations: batch
+            }
+          }, options)
+  
+          context.log.trace('options is %j', options)
+          context.log.info(`sending batch of ${batch.length}`)
+          result = await context.github.request(Object.assign(options, headers))
+          context.log.trace('result is %j', result)
+        }
+      } else {
+        // No annotations found, we can complete this run with a single PATCH request
+        context.log.trace('options is %j', options)
+        result = await context.github.request(Object.assign(options, headers))
+        context.log.trace('result is %j', result)
       }
-      context.log.trace('options is %j', options)
-
-      result = await context.github.request(Object.assign(options, headers))
-      context.log.trace('result is %j', result)
   }
 }
