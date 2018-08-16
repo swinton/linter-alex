@@ -354,27 +354,27 @@ describe('index', () => {
       status: 'completed',
       conclusion: 'neutral',
       output: {
-        summary: 'Alex found 51 issues',
+        summary: 'Alex found 99 issues',
         title: 'analysis',
         annotations: annotations.slice(0, 50)
       },
       completed_at: '2018-01-01T00:00:00.000Z'
     })
-    // expect(github.request).toHaveBeenNthCalledWith(3, {
-    //   headers: {
-    //     'accept': 'application/vnd.github.antiope-preview+json'
-    //   },
-    //   method: 'PATCH',
-    //   url: 'https://api.github.com/repos/wintron/example/check-runs/42',
-    //   status: 'completed',
-    //   conclusion: 'neutral',
-    //   output: {
-    //     summary: 'Alex found 51 issues',
-    //     title: 'analysis',
-    //     annotations: annotations.slice(50, 51)
-    //   },
-    //   completed_at: '2018-01-01T00:00:00.000Z'
-    // })
+    expect(github.request).toHaveBeenNthCalledWith(3, {
+      headers: {
+        'accept': 'application/vnd.github.antiope-preview+json'
+      },
+      method: 'PATCH',
+      url: 'https://api.github.com/repos/wintron/example/check-runs/42',
+      status: 'completed',
+      conclusion: 'neutral',
+      output: {
+        summary: 'Alex found 99 issues',
+        title: 'analysis',
+        annotations: annotations.slice(50, 99)
+      },
+      completed_at: '2018-01-01T00:00:00.000Z'
+    })
 
     expect(analyzeTree).toHaveBeenCalledTimes(1)
   })
