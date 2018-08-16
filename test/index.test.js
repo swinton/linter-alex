@@ -333,7 +333,7 @@ describe('index', () => {
     await robot.receive(event)
 
     expect(annotations.length).toBe(99)
-    expect(github.request).toHaveBeenCalledTimes(3)
+    expect(github.request).toHaveBeenCalledTimes(0)
     expect(github.request).toHaveBeenNthCalledWith(1, {
       headers: {
         'accept': 'application/vnd.github.antiope-preview+json'
