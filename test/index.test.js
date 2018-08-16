@@ -37,8 +37,8 @@ describe('index', () => {
     github = {}
     github.request = jest
       .fn()
-      .mockResolvedValueOnce({data: {id: 42, url: "https://api.github.com/repos/wintron/example/check-runs/42"}})
-      .mockResolvedValueOnce({data: {id: 42, url: "https://api.github.com/repos/wintron/example/check-runs/42"}})
+      .mockResolvedValue({data: {id: 42, url: "https://api.github.com/repos/wintron/example/check-runs/42"}})
+      // .mockResolvedValueOnce({data: {id: 42, url: "https://api.github.com/repos/wintron/example/check-runs/42"}})
 
     // Pass mocked out GitHub API into out robot instance
     robot.auth = () => Promise.resolve(github)
@@ -333,7 +333,7 @@ describe('index', () => {
     await robot.receive(event)
 
     expect(annotations.length).toBe(99)
-    expect(github.request).toHaveBeenCalledTimes(0)
+    expect(github.request).toHaveBeenCalledTimes(3)
     expect(github.request).toHaveBeenNthCalledWith(1, {
       headers: {
         'accept': 'application/vnd.github.antiope-preview+json'
