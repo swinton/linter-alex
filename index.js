@@ -8,7 +8,7 @@ module.exports = (robot) => {
     const {owner, repo} = context.repo()
     const {head_sha: sha} = check_run
 
-    handler({context, action, owner, repo, sha})
+    return handler({context, action, owner, repo, sha})
   })
 
   robot.on('check_suite', async context => {
@@ -16,7 +16,7 @@ module.exports = (robot) => {
     const {owner, repo} = context.repo()
     const {head_sha: sha} = check_suite
 
-    handler({context, action, owner, repo, sha})
+    return handler({context, action, owner, repo, sha})
   })
 }
 
@@ -47,33 +47,37 @@ const handler = async ({context, action, owner, repo, sha}) => {
       const annotations = (await analyzeTree(context, owner, repo, sha))
         .filter(annotation => annotation.length > 0)
         .reduce((accumulator, currentValue) => accumulator.concat(currentValue), [])
-      context.log.trace('annotations (%d) are %j', annotations.length, annotations)
+      const count = annotations.length
+      context.log.trace('annotations (%d) are %j', count, annotations)
 
       // Provide feedback
       // https://developer.github.com/v3/checks/runs/#update-a-check-run
       // PATCH /repos/:owner/:repo/check-runs/:check_run_id
 
-      let options = {
+      // Send annotations in batches of (up to) 50
+      while (annotations.length > 0) {
+        let batch = annotations.splice(0, 50)
+        context.log.info(`sending batch of ${batch.length}`)
+        result = await context.github.request(Object.assign({
+          method: 'PATCH',
+          url: check_run_url,
+          output: {
+            title: 'analysis',
+            summary: `Alex found ${count} issue${count === 1 ? '' : 's'}`,
+            annotations: batch
+          }
+        }, headers))
+        context.log.trace('result is %j', result)
+      }
+
+      // Complete the check run
+      result = await context.github.request(Object.assign({
         method: 'PATCH',
         url: check_run_url,
         status: 'completed',
-        conclusion: annotations.length > 0 ? 'neutral' : 'success',
+        conclusion: count > 0 ? 'neutral' : 'success',
         completed_at: (new Date()).toISOString()
-      }
-
-      if (annotations.length > 0) {
-        // Include output and annotations
-        options = Object.assign({
-          output: {
-            title: 'analysis',
-            summary: `Alex found ${annotations.length} issue${annotations.length === 1 ? '' : 's'}`,
-            annotations: annotations
-          }
-        }, options)
-      }
-      context.log.trace('options is %j', options)
-
-      result = await context.github.request(Object.assign(options, headers))
+      }, headers))
       context.log.trace('result is %j', result)
   }
 }

@@ -37,8 +37,7 @@ describe('index', () => {
     github = {}
     github.request = jest
       .fn()
-      .mockResolvedValueOnce({data: {id: 42, url: "https://api.github.com/repos/wintron/example/check-runs/42"}})
-      .mockResolvedValueOnce({data: {id: 42, url: "https://api.github.com/repos/wintron/example/check-runs/42"}})
+      .mockResolvedValue({data: {id: 42, url: "https://api.github.com/repos/wintron/example/check-runs/42"}})
 
     // Pass mocked out GitHub API into out robot instance
     robot.auth = () => Promise.resolve(github)
@@ -99,7 +98,7 @@ describe('index', () => {
 
     await robot.receive(event)
 
-    expect(github.request).toHaveBeenCalledTimes(2)
+    expect(github.request).toHaveBeenCalledTimes(3)
     expect(github.request).toHaveBeenNthCalledWith(1, {
       headers: {
         'accept': 'application/vnd.github.antiope-preview+json'
@@ -117,8 +116,6 @@ describe('index', () => {
       },
       method: 'PATCH',
       url: 'https://api.github.com/repos/wintron/example/check-runs/42',
-      status: 'completed',
-      conclusion: 'neutral',
       output: {
         summary: 'Alex found 1 issue',
         title: 'analysis',
@@ -131,7 +128,16 @@ describe('index', () => {
           title: 'title',
           warning_level: 'notice',
         }]
+      }
+    })
+    expect(github.request).toHaveBeenNthCalledWith(3, {
+      headers: {
+        'accept': 'application/vnd.github.antiope-preview+json'
       },
+      method: 'PATCH',
+      url: 'https://api.github.com/repos/wintron/example/check-runs/42',
+      status: 'completed',
+      conclusion: 'neutral',
       completed_at: '2018-01-01T00:00:00.000Z'
     })
 
@@ -161,7 +167,7 @@ describe('index', () => {
 
     await robot.receive(event)
 
-    expect(github.request).toHaveBeenCalledTimes(2)
+    expect(github.request).toHaveBeenCalledTimes(3)
     expect(github.request).toHaveBeenNthCalledWith(1, {
       headers: {
         'accept': 'application/vnd.github.antiope-preview+json'
@@ -179,8 +185,6 @@ describe('index', () => {
       },
       method: 'PATCH',
       url: 'https://api.github.com/repos/wintron/example/check-runs/42',
-      status: 'completed',
-      conclusion: 'neutral',
       output: {
         summary: 'Alex found 2 issues',
         title: 'analysis',
@@ -201,7 +205,16 @@ describe('index', () => {
           title: 'title',
           warning_level: 'notice',
         }]
+      }
+    })
+    expect(github.request).toHaveBeenNthCalledWith(3, {
+      headers: {
+        'accept': 'application/vnd.github.antiope-preview+json'
       },
+      method: 'PATCH',
+      url: 'https://api.github.com/repos/wintron/example/check-runs/42',
+      status: 'completed',
+      conclusion: 'neutral',
       completed_at: '2018-01-01T00:00:00.000Z'
     })
 
@@ -232,7 +245,7 @@ describe('index', () => {
 
     await robot.receive(event)
 
-    expect(github.request).toHaveBeenCalledTimes(2)
+    expect(github.request).toHaveBeenCalledTimes(3)
     expect(github.request).toHaveBeenNthCalledWith(1, {
       headers: {
         'accept': 'application/vnd.github.antiope-preview+json'
@@ -250,8 +263,6 @@ describe('index', () => {
       },
       method: 'PATCH',
       url: 'https://api.github.com/repos/wintron/example/check-runs/42',
-      status: 'completed',
-      conclusion: 'neutral',
       output: {
         summary: 'Alex found 2 issues',
         title: 'analysis',
@@ -272,7 +283,16 @@ describe('index', () => {
           title: 'title',
           warning_level: 'notice',
         }]
+      }
+    })
+    expect(github.request).toHaveBeenNthCalledWith(3, {
+      headers: {
+        'accept': 'application/vnd.github.antiope-preview+json'
       },
+      method: 'PATCH',
+      url: 'https://api.github.com/repos/wintron/example/check-runs/42',
+      status: 'completed',
+      conclusion: 'neutral',
       completed_at: '2018-01-01T00:00:00.000Z'
     })
 
@@ -307,6 +327,72 @@ describe('index', () => {
       url: 'https://api.github.com/repos/wintron/example/check-runs/42',
       status: 'completed',
       conclusion: 'success',
+      completed_at: '2018-01-01T00:00:00.000Z'
+    })
+
+    expect(analyzeTree).toHaveBeenCalledTimes(1)
+  })
+
+  it('handles more than 50 annotations', async () => {
+    const annotations =  Array(100).fill({
+      filename: 'FILENAME.md',
+      blob_href: 'https://github.com/wintron/example/blob/ref/FILENAME.md',
+      start_line: 1,
+      end_line: 1,
+      warning_level: 'notice',
+      message: 'message',
+      title: 'title'
+    })
+
+    analyzeTree.mockResolvedValue([annotations])
+
+    await robot.receive(event)
+
+    expect(annotations.length).toBe(100)
+    expect(github.request).toHaveBeenCalledTimes(4)
+    expect(github.request).toHaveBeenNthCalledWith(1, {
+      headers: {
+        'accept': 'application/vnd.github.antiope-preview+json'
+      },
+      method: 'POST',
+      url: 'https://api.github.com/repos/wintron/example/check-runs',
+      name: 'feedback',
+      head_sha: '9875bf915c118e6369a610770288cf7f0a415124',
+      status: 'in_progress',
+      started_at: '2018-01-01T00:00:00.000Z'
+    })
+    expect(github.request).toHaveBeenNthCalledWith(2, {
+      headers: {
+        'accept': 'application/vnd.github.antiope-preview+json'
+      },
+      method: 'PATCH',
+      url: 'https://api.github.com/repos/wintron/example/check-runs/42',
+      output: {
+        summary: 'Alex found 100 issues',
+        title: 'analysis',
+        annotations: annotations.slice(0, 50)
+      }
+    })
+    expect(github.request).toHaveBeenNthCalledWith(3, {
+      headers: {
+        'accept': 'application/vnd.github.antiope-preview+json'
+      },
+      method: 'PATCH',
+      url: 'https://api.github.com/repos/wintron/example/check-runs/42',
+      output: {
+        summary: 'Alex found 100 issues',
+        title: 'analysis',
+        annotations: annotations.slice(50, 100)
+      }
+    })
+    expect(github.request).toHaveBeenNthCalledWith(4, {
+      headers: {
+        'accept': 'application/vnd.github.antiope-preview+json'
+      },
+      method: 'PATCH',
+      url: 'https://api.github.com/repos/wintron/example/check-runs/42',
+      status: 'completed',
+      conclusion: 'neutral',
       completed_at: '2018-01-01T00:00:00.000Z'
     })
 
