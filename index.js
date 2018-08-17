@@ -54,37 +54,32 @@ const handler = async ({context, action, owner, repo, sha}) => {
       // https://developer.github.com/v3/checks/runs/#update-a-check-run
       // PATCH /repos/:owner/:repo/check-runs/:check_run_id
 
-      let options = {
+      // Send annotations in batches of (up to) 50
+      while (annotations.length > 0) {
+        let batch = annotations.splice(0, 50)
+        context.log.info(`sending batch of ${batch.length}`)
+        result = await context.github.request(Object.assign({
+          method: 'PATCH',
+          url: check_run_url,
+          output: {
+            annotations: batch
+          }
+        }, headers))
+        context.log.trace('result is %j', result)
+      }
+
+      // Complete the check run
+      result = await context.github.request(Object.assign({
         method: 'PATCH',
         url: check_run_url,
+        output: {
+          title: 'analysis',
+          summary: `Alex found ${count} issue${count === 1 ? '' : 's'}`
+        },
         status: 'completed',
         conclusion: count > 0 ? 'neutral' : 'success',
         completed_at: (new Date()).toISOString()
-      }
-
-      if (count > 0) {
-        // Send annotations in batches of (up to) 50
-        let batch
-        while (annotations.length > 0) {
-          batch = annotations.splice(0, 50)
-          options = Object.assign({
-            output: {
-              title: 'analysis',
-              summary: `Alex found ${count} issue${count === 1 ? '' : 's'}`,
-              annotations: batch
-            }
-          }, options)
-  
-          context.log.trace('options is %j', options)
-          context.log.info(`sending batch of ${batch.length}`)
-          result = await context.github.request(Object.assign(options, headers))
-          context.log.trace('result is %j', result)
-        }
-      } else {
-        // No annotations found, we can complete this run with a single PATCH request
-        context.log.trace('options is %j', options)
-        result = await context.github.request(Object.assign(options, headers))
-        context.log.trace('result is %j', result)
-      }
+      }, headers))
+      context.log.trace('result is %j', result)
   }
 }
