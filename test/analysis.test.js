@@ -133,30 +133,27 @@ describe('analyzeTree', () => {
     })
     expect(analysis).toEqual([
       [{
-        blob_href: "https://github.com/wintron/example/blob/9875bf915c118e6369a610770288cf7f0a415124/README.md",
         end_line: 1,
-        filename: "README.md",
+        path: "README.md",
         message: "`master` / `slave` may be insensitive, use `primary` / `replica` instead",
         start_line: 1,
         title: "master-slave",
-        warning_level: "notice"
+        annotation_level: "notice"
       }, {
-        blob_href: "https://github.com/wintron/example/blob/9875bf915c118e6369a610770288cf7f0a415124/README.md",
         end_line: 1,
-        filename: "README.md",
+        path: "README.md",
         message: "Don’t use “slave”, it’s profane",
         start_line: 1,
         title: "slave",
-        warning_level: "notice"
+        annotation_level: "notice"
       }], 
       [{
-        blob_href: "https://github.com/wintron/example/blob/9875bf915c118e6369a610770288cf7f0a415124/CONTRIBUTING.md",
         end_line: 1,
-        filename: "CONTRIBUTING.md",
+        path: "CONTRIBUTING.md",
         message: "Don’t use “jackass”, it’s profane",
         start_line: 1,
         title: "jackass",
-        warning_level: "notice"
+        annotation_level: "notice"
       }]
     ])
   })
