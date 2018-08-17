@@ -8,7 +8,7 @@ module.exports = (robot) => {
     const {owner, repo} = context.repo()
     const {head_sha: sha} = check_run
 
-    handler({context, action, owner, repo, sha})
+    await handler({context, action, owner, repo, sha})
   })
 
   robot.on('check_suite', async context => {
@@ -16,7 +16,7 @@ module.exports = (robot) => {
     const {owner, repo} = context.repo()
     const {head_sha: sha} = check_suite
 
-    handler({context, action, owner, repo, sha})
+    await handler({context, action, owner, repo, sha})
   })
 }
 

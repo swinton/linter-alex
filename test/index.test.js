@@ -324,7 +324,7 @@ describe('index', () => {
       title: 'title'
     })
 
-    analyzeTree.mockResolvedValue(annotations)
+    analyzeTree.mockResolvedValue([annotations])
 
     await robot.receive(event)
 
@@ -367,7 +367,7 @@ describe('index', () => {
       output: {
         summary: 'Alex found 99 issues',
         title: 'analysis',
-        annotations: annotations.slice(50, 99)
+        annotations: annotations.slice(49, 99)
       },
       completed_at: '2018-01-01T00:00:00.000Z'
     })
