@@ -62,6 +62,8 @@ const handler = async ({context, action, owner, repo, sha}) => {
           method: 'PATCH',
           url: check_run_url,
           output: {
+            title: 'analysis',
+            summary: `Alex found ${count} issue${count === 1 ? '' : 's'}`,
             annotations: batch
           }
         }, headers))
@@ -72,10 +74,6 @@ const handler = async ({context, action, owner, repo, sha}) => {
       result = await context.github.request(Object.assign({
         method: 'PATCH',
         url: check_run_url,
-        output: {
-          title: 'analysis',
-          summary: `Alex found ${count} issue${count === 1 ? '' : 's'}`
-        },
         status: 'completed',
         conclusion: count > 0 ? 'neutral' : 'success',
         completed_at: (new Date()).toISOString()
