@@ -38,7 +38,6 @@ describe('index', () => {
     github.request = jest
       .fn()
       .mockResolvedValue({data: {id: 42, url: "https://api.github.com/repos/wintron/example/check-runs/42"}})
-      // .mockResolvedValueOnce({data: {id: 42, url: "https://api.github.com/repos/wintron/example/check-runs/42"}})
 
     // Pass mocked out GitHub API into out robot instance
     robot.auth = () => Promise.resolve(github)
