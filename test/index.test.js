@@ -314,8 +314,7 @@ describe('index', () => {
   })
 
   it('handles more than 50 annotations', async () => {
-    let annotations = []
-    const annotation = {
+    const annotations =  Array(99).fill({
       filename: 'FILENAME.md',
       blob_href: 'https://github.com/wintron/example/blob/ref/FILENAME.md',
       start_line: 1,
@@ -323,12 +322,9 @@ describe('index', () => {
       warning_level: 'notice',
       message: 'message',
       title: 'title'
-    }
-    // I got 99 annotations...
-    for (let i = 0; i < 99; i++) {
-      annotations.push(annotation)
-    }
-    analyzeTree.mockResolvedValue([annotations])
+    })
+
+    analyzeTree.mockResolvedValue(annotations)
 
     await robot.receive(event)
 
