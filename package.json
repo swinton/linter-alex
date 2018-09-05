@@ -15,16 +15,16 @@
     "simulate-run": "LOG_LEVEL=TRACE node_modules/.bin/probot simulate check_run ./test/fixtures/check_run.rerequested.json ./index.js"
   },
   "dependencies": {
-    "alex": "^5.1.0",
-    "probot": "^6.1.0"
+    "alex": "^6.0.0",
+    "probot": "^7.1.0"
   },
   "devDependencies": {
-    "@octokit/rest": "15.2.0",
+    "@octokit/rest": "15.11.1",
     "coveralls": "^3.0.2",
     "jest": "^23.0.0",
     "nodemon": "^1.17.4",
     "smee-client": "^1.0.1",
-    "standard": "^10.0.3"
+    "standard": "^12.0.1"
   },
   "engines": {
     "node": ">= 8.3.0"
