@@ -1,6 +1,6 @@
 # linter-alex
 
-[![build status](https://travis-ci.org/swinton/linter-alex.svg?branch=master)](https://travis-ci.org/swinton/linter-alex) [![coverage status](https://coveralls.io/repos/github/swinton/linter-alex/badge.svg?branch=master)](https://coveralls.io/github/swinton/linter-alex?branch=master)
+[![build status](https://travis-ci.org/swinton/linter-alex.svg?branch=master)](https://travis-ci.org/swinton/linter-alex) [![coverage status](https://coveralls.io/repos/github/swinton/linter-alex/badge.svg?branch=master)](https://coveralls.io/github/swinton/linter-alex?branch=master) [![Greenkeeper badge](https://badges.greenkeeper.io/swinton/linter-alex.svg)](https://greenkeeper.io/)
 
 > a GitHub App built with [probot](https://github.com/probot/probot) combining [Alex](http://alexjs.com/) with GitHub's [(beta) Checks API](https://developer.github.com/changes/2018-05-07-new-checks-api-public-beta/) to ensure **sensitive, considerate writing before you merge your Pull Requests**.
 
