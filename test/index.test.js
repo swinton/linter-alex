@@ -1,5 +1,5 @@
-const {createRobot} = require('probot')
-const app = require('..')
+const { Application } = require('probot')
+const myProbotApp = require('..')
 const checkSuitePayload = require('./fixtures/check_suite.requested')
 const checkRunPayload = require('./fixtures/check_run.rerequested')
 const myDate = new Date(Date.UTC(2018, 0, 1))
@@ -11,8 +11,8 @@ jest.mock('../lib/analysis.js')
 const analyzeTree = require('../lib/analysis')
 
 describe('index', () => {
+  let app
   let event
-  let robot
   let github
 
   beforeEach(() => {
@@ -25,13 +25,13 @@ describe('index', () => {
     Object.assign(Date, RealDate)
 
     // Define event
-    event = {event: 'check_suite', payload: checkSuitePayload}
+    event = {name: 'check_suite', payload: checkSuitePayload}
 
-    // Create robot instance
-    robot = createRobot()
+    // Create app instance
+    app = new Application()
 
-    // Initialize app with robot instance
-    app(robot)
+    // Initialize app with probot application
+    app.load(myProbotApp)
   
     // Mock out the GitHub API
     github = {}
@@ -39,8 +39,8 @@ describe('index', () => {
       .fn()
       .mockResolvedValue({data: {id: 42, url: "https://api.github.com/repos/wintron/example/check-runs/42"}})
 
-    // Pass mocked out GitHub API into out robot instance
-    robot.auth = () => Promise.resolve(github)
+    // Pass mocked out GitHub API into our app instance
+    app.auth = () => Promise.resolve(github)
   })
 
   afterEach(() => {
@@ -51,7 +51,7 @@ describe('index', () => {
   it('handles no annotations', async () => {
     analyzeTree.mockResolvedValue([])
 
-    await robot.receive(event)
+    await app.receive(event)
 
     expect(github.request).toHaveBeenCalledTimes(2)
     expect(github.request).toHaveBeenNthCalledWith(1, {
@@ -96,7 +96,7 @@ describe('index', () => {
       }]
     ])
 
-    await robot.receive(event)
+    await app.receive(event)
 
     expect(github.request).toHaveBeenCalledTimes(3)
     expect(github.request).toHaveBeenNthCalledWith(1, {
@@ -165,7 +165,7 @@ describe('index', () => {
       }]
     ])
 
-    await robot.receive(event)
+    await app.receive(event)
 
     expect(github.request).toHaveBeenCalledTimes(3)
     expect(github.request).toHaveBeenNthCalledWith(1, {
@@ -243,7 +243,7 @@ describe('index', () => {
       }]
     ])
 
-    await robot.receive(event)
+    await app.receive(event)
 
     expect(github.request).toHaveBeenCalledTimes(3)
     expect(github.request).toHaveBeenNthCalledWith(1, {
@@ -301,11 +301,11 @@ describe('index', () => {
 
   it('handles a check_run event', async () => {
     // Override event
-    event = {event: 'check_run', payload: checkRunPayload}
+    event = {name: 'check_run', payload: checkRunPayload}
 
     analyzeTree.mockResolvedValue([])
 
-    await robot.receive(event)
+    await app.receive(event)
 
     expect(github.request).toHaveBeenCalledTimes(2)
     expect(github.request).toHaveBeenNthCalledWith(1, {
@@ -346,7 +346,7 @@ describe('index', () => {
 
     analyzeTree.mockResolvedValue([annotations])
 
-    await robot.receive(event)
+    await app.receive(event)
 
     expect(annotations.length).toBe(100)
     expect(github.request).toHaveBeenCalledTimes(4)
@@ -403,7 +403,7 @@ describe('index', () => {
     // Override event action
     event.payload.action = 'completed'
 
-    await robot.receive(event)
+    await app.receive(event)
 
     expect(github.request).toHaveBeenCalledTimes(0)
     expect(analyzeTree).toHaveBeenCalledTimes(0)
