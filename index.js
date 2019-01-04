@@ -21,6 +21,7 @@ module.exports = (robot) => {
 }
 
 const handler = async ({context, action, owner, repo, sha}) => {
+  started_at = (new Date()).toISOString()
   context.log.trace(`action is "${action}".`)
   context.log.trace(`repo is "${owner}/${repo}".`)
   context.log.trace(`sha is "${sha}".`)
@@ -35,7 +36,7 @@ const handler = async ({context, action, owner, repo, sha}) => {
         name: 'feedback',
         head_sha: sha,
         status: 'in_progress',
-        started_at: (new Date()).toISOString()
+        started_at: started_at
       }, headers))
 
       const {data: {id: check_run_id, url: check_run_url}} = result
@@ -75,6 +76,7 @@ const handler = async ({context, action, owner, repo, sha}) => {
         method: 'PATCH',
         url: check_run_url,
         status: 'completed',
+        started_at: started_at,
         conclusion: count > 0 ? 'neutral' : 'success',
         completed_at: (new Date()).toISOString()
       }, headers))
