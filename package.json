@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "alex": "^6.0.0",
-    "probot": "^7.1.0"
+    "probot": "^9.2.19"
   },
   "devDependencies": {
     "@octokit/rest": "15.11.1",
