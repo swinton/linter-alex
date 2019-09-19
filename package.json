@@ -19,7 +19,7 @@
     "probot": "^7.1.0"
   },
   "devDependencies": {
-    "@octokit/rest": "15.11.1",
+    "@octokit/rest": "16.29.0",
     "coveralls": "^3.0.2",
     "jest": "^23.0.0",
     "nodemon": "^1.17.4",
