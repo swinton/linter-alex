@@ -15,7 +15,7 @@
     "simulate-run": "LOG_LEVEL=TRACE node_modules/.bin/probot simulate check_run ./test/fixtures/check_run.rerequested.json ./index.js"
   },
   "dependencies": {
-    "alex": "^6.0.0",
+    "alex": "^8.1.0",
     "probot": "^7.1.0"
   },
   "devDependencies": {
